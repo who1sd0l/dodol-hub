@@ -16,10 +16,17 @@ end
 -- Script Registry
 local Scripts = {
     {
-        Name = "Free Camera",
+        Name = "Free Camera v1",
         Description = "Fly around with smooth camera controls",
         Icon = "📷",
         ScriptUrl = "https://raw.githubusercontent.com/who1sd0l/dodol-hub/main/FreeCameraScript-ver-1.lua",
+        Color = Color3.fromRGB(100, 200, 255)
+    },
+    {
+        Name = "Free Camera v2",
+        Description = "Fly around with smooth camera controls",
+        Icon = "📷",
+        ScriptUrl = "https://raw.githubusercontent.com/who1sd0l/dodol-hub/main/FreeCameraScript-ver-2.lua",
         Color = Color3.fromRGB(100, 200, 255)
     },
     {
@@ -699,3 +706,4 @@ end)
 print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
 print("🎮 Dodol Hub Loaded Successfully!")
 print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+
