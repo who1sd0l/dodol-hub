@@ -26,14 +26,14 @@ local Scripts = {
         Name = "Movement Suite",
         Description = "Fly, Run, Noclip & Teleport with pro UI",
         Icon = "🚀",
-        ScriptUrl = "https://raw.githubusercontent.com/who1sd0l/dodol-hub/main/FLY.lua",
+        ScriptUrl = "https://raw.githubusercontent.com/who1sd0l/dodol-hub/main/fly.lua",
         Color = Color3.fromRGB(255, 150, 100)
     },
     {
         Name = "Checkpoint Teleporter",
         Description = "Smart checkpoint scanner & teleporter",
         Icon = "📍",
-        ScriptUrl = "https://raw.githubusercontent.com/who1sd0l/dodol-hub/main/CHECKPOINT-NEW.lua",
+        ScriptUrl = "https://raw.githubusercontent.com/who1sd0l/dodol-hub/main/checkpoint.lua",
         Color = Color3.fromRGB(150, 255, 100)
     }
 }
@@ -490,4 +490,5 @@ end)
 print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
 print("🎮 Dodol Hub Loaded Successfully!")
 print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+
 
