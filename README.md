@@ -15,7 +15,7 @@ Your ultimate collection of Roblox scripts in one beautiful hub!
 Copy and paste this into your executor:
 
 ```lua
-loadstring(game:HttpGet("https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/DodolHub.lua"))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/who1sd0l/dodol-hub/main/DodolHub.lua"))()
 ```
 
 ### Method 2: Direct File Execution
@@ -186,3 +186,4 @@ Free to use and modify. Credit appreciated but not required.
 ---
 
 Made with ❤️ by Dodol Hub Team
+
