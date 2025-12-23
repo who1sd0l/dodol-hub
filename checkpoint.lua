@@ -1,4 +1,4 @@
-﻿-- // Smart Checkpoint Scanner + Teleporter (LocalScript)
+-- // Smart Checkpoint Scanner + Teleporter (LocalScript)
 -- // Minimalist GUI — now with persistent list across Refresh + natural sorting
 -- // Enhanced: Smooth teleport landing + local invisibility fix (Option 1)
 
@@ -422,11 +422,26 @@ local function createGui()
     hubBtn.BackgroundColor3 = Color3.fromRGB(138, 43, 226)
     hubBtn.AutoButtonColor = true
     hubBtn.Size = UDim2.fromOffset(60, 20)
-    hubBtn.Position = UDim2.new(1, -90, 0, 4)
+    hubBtn.Position = UDim2.new(1, -156, 0, 4)
     hubBtn.Parent = top
     local hubCorner = Instance.new("UICorner")
     hubCorner.CornerRadius = UDim.new(0, 6)
     hubCorner.Parent = hubBtn
+    
+    local exitBtn = Instance.new("TextButton")
+    exitBtn.Name = "ExitButton"
+    exitBtn.Text = "Exit"
+    exitBtn.TextSize = 14
+    exitBtn.Font = Enum.Font.GothamMedium
+    exitBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    exitBtn.BackgroundColor3 = Color3.fromRGB(220, 50, 50)
+    exitBtn.AutoButtonColor = true
+    exitBtn.Size = UDim2.fromOffset(60, 20)
+    exitBtn.Position = UDim2.new(1, -90, 0, 4)
+    exitBtn.Parent = top
+    local exitCorner = Instance.new("UICorner")
+    exitCorner.CornerRadius = UDim.new(0, 6)
+    exitCorner.Parent = exitBtn
 
     local search = Instance.new("TextBox")
     search.Name = "Search"
@@ -596,6 +611,9 @@ local function createGui()
         else
             warn("Hub not found. Make sure you loaded from Dodol Hub!")
         end
+    end)
+    exitBtn.MouseButton1Click:Connect(function()
+        screen:Destroy()
     end)
     UserInputService.InputBegan:Connect(function(input, gpe)
         if gpe then return end
