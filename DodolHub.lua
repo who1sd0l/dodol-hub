@@ -48,11 +48,29 @@ ScreenGui.Parent = PlayerGui
 -- Create Loading Screen
 local LoadingFrame = Instance.new("Frame")
 LoadingFrame.Name = "LoadingFrame"
-LoadingFrame.Size = UDim2.new(1, 0, 1, 0)
-LoadingFrame.Position = UDim2.new(0, 0, 0, 0)
+LoadingFrame.Size = UDim2.new(0, 500, 0, 400)
+LoadingFrame.Position = UDim2.new(0.5, -250, 0.5, -200)
 LoadingFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 25)
 LoadingFrame.BorderSizePixel = 0
 LoadingFrame.Parent = ScreenGui
+
+local LoadingFrameCorner = Instance.new("UICorner")
+LoadingFrameCorner.CornerRadius = UDim.new(0, 20)
+LoadingFrameCorner.Parent = LoadingFrame
+
+-- Loading Frame Shadow
+local LoadingShadow = Instance.new("ImageLabel")
+LoadingShadow.Name = "Shadow"
+LoadingShadow.Size = UDim2.new(1, 40, 1, 40)
+LoadingShadow.Position = UDim2.new(0, -20, 0, -20)
+LoadingShadow.BackgroundTransparency = 1
+LoadingShadow.Image = "rbxasset://textures/ui/GuiImagePlaceholder.png"
+LoadingShadow.ImageColor3 = Color3.fromRGB(0, 0, 0)
+LoadingShadow.ImageTransparency = 0.5
+LoadingShadow.ScaleType = Enum.ScaleType.Slice
+LoadingShadow.SliceCenter = Rect.new(10, 10, 118, 118)
+LoadingShadow.ZIndex = 0
+LoadingShadow.Parent = LoadingFrame
 
 -- Create Gradient Background
 local Gradient = Instance.new("UIGradient")
@@ -78,42 +96,42 @@ end)
 -- Logo Container
 local LogoContainer = Instance.new("Frame")
 LogoContainer.Name = "LogoContainer"
-LogoContainer.Size = UDim2.new(0, 400, 0, 200)
-LogoContainer.Position = UDim2.new(0.5, -200, 0.5, -150)
+LogoContainer.Size = UDim2.new(1, -40, 0, 180)
+LogoContainer.Position = UDim2.new(0, 20, 0, 60)
 LogoContainer.BackgroundTransparency = 1
 LogoContainer.Parent = LoadingFrame
 
 -- Logo Text
 local LogoText = Instance.new("TextLabel")
 LogoText.Name = "LogoText"
-LogoText.Size = UDim2.new(1, 0, 0, 80)
+LogoText.Size = UDim2.new(1, 0, 0, 70)
 LogoText.Position = UDim2.new(0, 0, 0, 0)
 LogoText.BackgroundTransparency = 1
 LogoText.Font = Enum.Font.GothamBold
 LogoText.Text = "DODOL HUB"
 LogoText.TextColor3 = Color3.fromRGB(255, 255, 255)
-LogoText.TextSize = 60
+LogoText.TextSize = 48
 LogoText.TextTransparency = 1
 LogoText.Parent = LogoContainer
 
 -- Logo Subtitle
 local SubtitleText = Instance.new("TextLabel")
 SubtitleText.Name = "SubtitleText"
-SubtitleText.Size = UDim2.new(1, 0, 0, 30)
-SubtitleText.Position = UDim2.new(0, 0, 0, 90)
+SubtitleText.Size = UDim2.new(1, 0, 0, 25)
+SubtitleText.Position = UDim2.new(0, 0, 0, 80)
 SubtitleText.BackgroundTransparency = 1
 SubtitleText.Font = Enum.Font.Gotham
 SubtitleText.Text = "Your Ultimate Script Collection"
 SubtitleText.TextColor3 = Color3.fromRGB(150, 150, 255)
-SubtitleText.TextSize = 18
+SubtitleText.TextSize = 16
 SubtitleText.TextTransparency = 1
 SubtitleText.Parent = LogoContainer
 
 -- Loading Bar Background
 local LoadingBarBG = Instance.new("Frame")
 LoadingBarBG.Name = "LoadingBarBG"
-LoadingBarBG.Size = UDim2.new(0, 300, 0, 6)
-LoadingBarBG.Position = UDim2.new(0.5, -150, 0.5, 80)
+LoadingBarBG.Size = UDim2.new(1, -80, 0, 6)
+LoadingBarBG.Position = UDim2.new(0, 40, 1, -80)
 LoadingBarBG.BackgroundColor3 = Color3.fromRGB(40, 40, 60)
 LoadingBarBG.BorderSizePixel = 0
 LoadingBarBG.BackgroundTransparency = 1
@@ -375,6 +393,24 @@ local function createScriptCard(scriptData, index)
     
     -- Execute script
     ExecuteBtn.MouseButton1Click:Connect(function()
+        -- Check if URL is still a placeholder
+        if string.find(scriptData.ScriptUrl, "YOUR_USERNAME") or string.find(scriptData.ScriptUrl, "YOUR_REPO") then
+            warn("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+            warn("⚠️ SETUP REQUIRED!")
+            warn("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+            warn("Please upload your scripts to GitHub first!")
+            warn("")
+            warn("Steps:")
+            warn("1. Upload all .lua files to GitHub")
+            warn("2. Edit DodolHub.lua")
+            warn("3. Replace YOUR_USERNAME with your GitHub username")
+            warn("4. Replace YOUR_REPO with your repository name")
+            warn("")
+            warn("Read QUICK_START.md for detailed instructions")
+            warn("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+            return
+        end
+        
         local success, err = pcall(function()
             -- Hide hub
             MainFrame.Visible = false
@@ -393,9 +429,20 @@ local function createScriptCard(scriptData, index)
             local scriptUrl = scriptData.ScriptUrl
             
             print("Loading script: " .. scriptData.Name)
+            print("URL: " .. scriptUrl)
             
             -- Use game:HttpGet for loadstring compatibility
             local scriptContent = game:HttpGet(scriptUrl, true)
+            
+            -- Check if we got valid content
+            if not scriptContent or scriptContent == "" or scriptContent == nil then
+                error("Failed to download script - URL may be incorrect or file not found")
+            end
+            
+            -- Remove BOM (Byte Order Mark) if present - fixes Unicode character U+feff error
+            if scriptContent:sub(1, 3) == "\239\187\191" then
+                scriptContent = scriptContent:sub(4)
+            end
             
             -- Execute the script
             local loadedScript, loadErr = loadstring(scriptContent)
@@ -403,12 +450,22 @@ local function createScriptCard(scriptData, index)
                 loadedScript()
                 print("✓ Script executed: " .. scriptData.Name)
             else
-                warn("Failed to load script: " .. tostring(loadErr))
+                error("Failed to load script: " .. tostring(loadErr))
             end
         end)
         
         if not success then
-            warn("Failed to execute script: " .. tostring(err))
+            warn("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+            warn("❌ Failed to execute script!")
+            warn("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+            warn("Error: " .. tostring(err))
+            warn("")
+            warn("Common fixes:")
+            warn("• Make sure your GitHub repository is PUBLIC")
+            warn("• Check that the file exists on GitHub")
+            warn("• Verify the URL is correct")
+            warn("• Some games block HTTP requests")
+            warn("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
             MainFrame.Visible = true
         end
     end)
@@ -490,5 +547,3 @@ end)
 print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
 print("🎮 Dodol Hub Loaded Successfully!")
 print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
-
-
