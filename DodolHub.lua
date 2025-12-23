@@ -23,13 +23,6 @@ local Scripts = {
         Color = Color3.fromRGB(100, 200, 255)
     },
     {
-        Name = "Free Camera v2",
-        Description = "Fly around with smooth camera controls",
-        Icon = "📷",
-        ScriptUrl = "https://raw.githubusercontent.com/who1sd0l/dodol-hub/main/FreeCameraScript-ver-2.lua",
-        Color = Color3.fromRGB(100, 200, 255)
-    },
-    {
         Name = "Movement Suite",
         Description = "Fly, Run, Noclip & Teleport with pro UI",
         Icon = "🚀",
@@ -42,6 +35,13 @@ local Scripts = {
         Icon = "📍",
         ScriptUrl = "https://raw.githubusercontent.com/who1sd0l/dodol-hub/main/checkpoint.lua",
         Color = Color3.fromRGB(150, 255, 100)
+    },
+    {
+        Name = "Free Camera v2",
+        Description = "Fly around with smooth camera controls",
+        Icon = "📷",
+        ScriptUrl = "https://raw.githubusercontent.com/who1sd0l/dodol-hub/main/FreeCameraScript-ver-2.lua",
+        Color = Color3.fromRGB(100, 200, 255)
     }
 }
 
@@ -706,4 +706,5 @@ end)
 print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
 print("🎮 Dodol Hub Loaded Successfully!")
 print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+
 
