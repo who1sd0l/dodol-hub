@@ -45,59 +45,54 @@ ScreenGui.ResetOnSpawn = false
 ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 ScreenGui.Parent = PlayerGui
 
--- Create Loading Screen
+-- Create Loading Screen with glass morphism
 local LoadingFrame = Instance.new("Frame")
 LoadingFrame.Name = "LoadingFrame"
-LoadingFrame.Size = UDim2.new(0, 500, 0, 400)
-LoadingFrame.Position = UDim2.new(0.5, -250, 0.5, -200)
-LoadingFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 25)
+LoadingFrame.Size = UDim2.new(0, 400, 0, 300)
+LoadingFrame.Position = UDim2.new(0.5, -200, 0.5, -150)
+LoadingFrame.BackgroundColor3 = Color3.fromRGB(18, 18, 26)
+LoadingFrame.BackgroundTransparency = 0.1
 LoadingFrame.BorderSizePixel = 0
 LoadingFrame.Parent = ScreenGui
 
 local LoadingFrameCorner = Instance.new("UICorner")
-LoadingFrameCorner.CornerRadius = UDim.new(0, 20)
+LoadingFrameCorner.CornerRadius = UDim.new(0, 24)
 LoadingFrameCorner.Parent = LoadingFrame
 
--- Loading Frame Shadow
-local LoadingShadow = Instance.new("ImageLabel")
-LoadingShadow.Name = "Shadow"
-LoadingShadow.Size = UDim2.new(1, 40, 1, 40)
-LoadingShadow.Position = UDim2.new(0, -20, 0, -20)
-LoadingShadow.BackgroundTransparency = 1
-LoadingShadow.Image = "rbxasset://textures/ui/GuiImagePlaceholder.png"
-LoadingShadow.ImageColor3 = Color3.fromRGB(0, 0, 0)
-LoadingShadow.ImageTransparency = 0.5
-LoadingShadow.ScaleType = Enum.ScaleType.Slice
-LoadingShadow.SliceCenter = Rect.new(10, 10, 118, 118)
-LoadingShadow.ZIndex = 0
-LoadingShadow.Parent = LoadingFrame
+-- Subtle stroke for glass effect
+local LoadingStroke = Instance.new("UIStroke")
+LoadingStroke.Color = Color3.fromRGB(255, 255, 255)
+LoadingStroke.Transparency = 0.85
+LoadingStroke.Thickness = 1.5
+LoadingStroke.Parent = LoadingFrame
 
--- Create Gradient Background
+-- Blur effect background
+local BlurBG = Instance.new("Frame")
+BlurBG.Size = UDim2.new(1, 0, 1, 0)
+BlurBG.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+BlurBG.BackgroundTransparency = 0.3
+BlurBG.BorderSizePixel = 0
+BlurBG.ZIndex = -1
+BlurBG.Parent = LoadingFrame
+
+local BlurCorner = Instance.new("UICorner")
+BlurCorner.CornerRadius = UDim.new(0, 24)
+BlurCorner.Parent = BlurBG
+
+-- Subtle gradient overlay
 local Gradient = Instance.new("UIGradient")
 Gradient.Color = ColorSequence.new{
-    ColorSequenceKeypoint.new(0, Color3.fromRGB(20, 20, 40)),
-    ColorSequenceKeypoint.new(0.5, Color3.fromRGB(30, 15, 45)),
-    ColorSequenceKeypoint.new(1, Color3.fromRGB(15, 25, 50))
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(45, 45, 75)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(25, 25, 45))
 }
-Gradient.Rotation = 45
-Gradient.Parent = LoadingFrame
-
--- Animated gradient rotation
-spawn(function()
-    while LoadingFrame.Parent do
-        for i = 0, 360, 2 do
-            if not LoadingFrame.Parent then break end
-            Gradient.Rotation = i
-            wait(0.03)
-        end
-    end
-end)
+Gradient.Rotation = 135
+Gradient.Parent = BlurBG
 
 -- Logo Container
 local LogoContainer = Instance.new("Frame")
 LogoContainer.Name = "LogoContainer"
-LogoContainer.Size = UDim2.new(1, -40, 0, 180)
-LogoContainer.Position = UDim2.new(0, 20, 0, 60)
+LogoContainer.Size = UDim2.new(1, -60, 0, 120)
+LogoContainer.Position = UDim2.new(0, 30, 0, 60)
 LogoContainer.BackgroundTransparency = 1
 LogoContainer.Parent = LoadingFrame
 
@@ -208,186 +203,228 @@ local function animateIn()
     LoadingFrame:Destroy()
 end
 
--- Create Main Hub Frame
+-- Create Main Hub Frame with glass morphism
 local MainFrame = Instance.new("Frame")
 MainFrame.Name = "MainFrame"
-MainFrame.Size = UDim2.new(0, 600, 0, 500)
-MainFrame.Position = UDim2.new(0.5, -300, 0.5, -250)
-MainFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
+MainFrame.Size = UDim2.new(0, 520, 0, 580)
+MainFrame.Position = UDim2.new(0.5, -260, 0.5, -290)
+MainFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 30)
+MainFrame.BackgroundTransparency = 0.05
 MainFrame.BorderSizePixel = 0
 MainFrame.Visible = false
 MainFrame.Parent = ScreenGui
 
 local MainFrameCorner = Instance.new("UICorner")
-MainFrameCorner.CornerRadius = UDim.new(0, 15)
+MainFrameCorner.CornerRadius = UDim.new(0, 20)
 MainFrameCorner.Parent = MainFrame
 
--- Main Frame Shadow
-local Shadow = Instance.new("ImageLabel")
-Shadow.Name = "Shadow"
-Shadow.Size = UDim2.new(1, 40, 1, 40)
-Shadow.Position = UDim2.new(0, -20, 0, -20)
-Shadow.BackgroundTransparency = 1
-Shadow.Image = "rbxasset://textures/ui/GuiImagePlaceholder.png"
-Shadow.ImageColor3 = Color3.fromRGB(0, 0, 0)
-Shadow.ImageTransparency = 0.7
-Shadow.ScaleType = Enum.ScaleType.Slice
-Shadow.SliceCenter = Rect.new(10, 10, 118, 118)
-Shadow.ZIndex = 0
-Shadow.Parent = MainFrame
+-- Glass effect stroke
+local MainStroke = Instance.new("UIStroke")
+MainStroke.Color = Color3.fromRGB(255, 255, 255)
+MainStroke.Transparency = 0.9
+MainStroke.Thickness = 1.5
+MainStroke.Parent = MainFrame
 
--- Header
+-- Background blur effect
+local MainBlurBG = Instance.new("Frame")
+MainBlurBG.Size = UDim2.new(1, 0, 1, 0)
+MainBlurBG.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+MainBlurBG.BackgroundTransparency = 0.4
+MainBlurBG.BorderSizePixel = 0
+MainBlurBG.ZIndex = -1
+MainBlurBG.Parent = MainFrame
+
+local MainBlurCorner = Instance.new("UICorner")
+MainBlurCorner.CornerRadius = UDim.new(0, 20)
+MainBlurCorner.Parent = MainBlurBG
+
+-- Header with clean design
 local Header = Instance.new("Frame")
 Header.Name = "Header"
-Header.Size = UDim2.new(1, 0, 0, 70)
-Header.BackgroundColor3 = Color3.fromRGB(35, 35, 50)
+Header.Size = UDim2.new(1, 0, 0, 65)
+Header.BackgroundTransparency = 1
 Header.BorderSizePixel = 0
 Header.Parent = MainFrame
 
-local HeaderCorner = Instance.new("UICorner")
-HeaderCorner.CornerRadius = UDim.new(0, 15)
-HeaderCorner.Parent = Header
+-- Subtle divider line
+local Divider = Instance.new("Frame")
+Divider.Size = UDim2.new(1, -40, 0, 1)
+Divider.Position = UDim2.new(0, 20, 1, -1)
+Divider.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Divider.BackgroundTransparency = 0.92
+Divider.BorderSizePixel = 0
+Divider.Parent = Header
 
-local HeaderCover = Instance.new("Frame")
-HeaderCover.Size = UDim2.new(1, 0, 0, 15)
-HeaderCover.Position = UDim2.new(0, 0, 1, -15)
-HeaderCover.BackgroundColor3 = Color3.fromRGB(35, 35, 50)
-HeaderCover.BorderSizePixel = 0
-HeaderCover.Parent = Header
-
--- Header Title
+-- Header Title with modern styling
 local HeaderTitle = Instance.new("TextLabel")
-HeaderTitle.Size = UDim2.new(1, -120, 1, 0)
-HeaderTitle.Position = UDim2.new(0, 20, 0, 0)
+HeaderTitle.Size = UDim2.new(1, -80, 1, -10)
+HeaderTitle.Position = UDim2.new(0, 25, 0, 5)
 HeaderTitle.BackgroundTransparency = 1
 HeaderTitle.Font = Enum.Font.GothamBold
-HeaderTitle.Text = "🎮 DODOL HUB"
+HeaderTitle.Text = "DODOL"
 HeaderTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
-HeaderTitle.TextSize = 28
+HeaderTitle.TextSize = 24
 HeaderTitle.TextXAlignment = Enum.TextXAlignment.Left
 HeaderTitle.Parent = Header
 
--- Close Button
+-- Subtitle tag
+local HeaderSubtitle = Instance.new("TextLabel")
+HeaderSubtitle.Size = UDim2.new(0, 150, 0, 18)
+HeaderSubtitle.Position = UDim2.new(0, 25, 0, 35)
+HeaderSubtitle.BackgroundTransparency = 1
+HeaderSubtitle.Font = Enum.Font.Gotham
+HeaderSubtitle.Text = "Script Hub v1.0"
+HeaderSubtitle.TextColor3 = Color3.fromRGB(140, 140, 160)
+HeaderSubtitle.TextSize = 12
+HeaderSubtitle.TextXAlignment = Enum.TextXAlignment.Left
+HeaderSubtitle.Parent = Header
+
+-- Minimalist Close Button
 local CloseButton = Instance.new("TextButton")
 CloseButton.Name = "CloseButton"
-CloseButton.Size = UDim2.new(0, 40, 0, 40)
-CloseButton.Position = UDim2.new(1, -55, 0.5, -20)
-CloseButton.BackgroundColor3 = Color3.fromRGB(220, 50, 50)
+CloseButton.Size = UDim2.new(0, 36, 0, 36)
+CloseButton.Position = UDim2.new(1, -48, 0, 15)
+CloseButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+CloseButton.BackgroundTransparency = 0.95
 CloseButton.BorderSizePixel = 0
 CloseButton.Font = Enum.Font.GothamBold
-CloseButton.Text = "✕"
+CloseButton.Text = "×"
 CloseButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-CloseButton.TextSize = 20
+CloseButton.TextSize = 22
 CloseButton.Parent = Header
 
 local CloseButtonCorner = Instance.new("UICorner")
-CloseButtonCorner.CornerRadius = UDim.new(0, 8)
+CloseButtonCorner.CornerRadius = UDim.new(1, 0)
 CloseButtonCorner.Parent = CloseButton
+
+-- Hover effect for close button
+CloseButton.MouseEnter:Connect(function()
+    TweenService:Create(CloseButton, TweenInfo.new(0.2), {
+        BackgroundColor3 = Color3.fromRGB(255, 70, 70),
+        BackgroundTransparency = 0
+    }):Play()
+end)
+
+CloseButton.MouseLeave:Connect(function()
+    TweenService:Create(CloseButton, TweenInfo.new(0.2), {
+        BackgroundColor3 = Color3.fromRGB(255, 255, 255),
+        BackgroundTransparency = 0.95
+    }):Play()
+end)
 
 CloseButton.MouseButton1Click:Connect(function()
     ScreenGui:Destroy()
 end)
 
--- Scripts Container
+-- Scripts Container with padding
 local ScrollFrame = Instance.new("ScrollingFrame")
 ScrollFrame.Name = "ScrollFrame"
-ScrollFrame.Size = UDim2.new(1, -40, 1, -100)
-ScrollFrame.Position = UDim2.new(0, 20, 0, 85)
+ScrollFrame.Size = UDim2.new(1, -50, 1, -95)
+ScrollFrame.Position = UDim2.new(0, 25, 0, 75)
 ScrollFrame.BackgroundTransparency = 1
 ScrollFrame.BorderSizePixel = 0
-ScrollFrame.ScrollBarThickness = 8
-ScrollFrame.ScrollBarImageColor3 = Color3.fromRGB(100, 100, 150)
+ScrollFrame.ScrollBarThickness = 4
+ScrollFrame.ScrollBarImageColor3 = Color3.fromRGB(255, 255, 255)
+ScrollFrame.ScrollBarImageTransparency = 0.8
 ScrollFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
 ScrollFrame.Parent = MainFrame
 
 local ListLayout = Instance.new("UIListLayout")
-ListLayout.Padding = UDim.new(0, 15)
+ListLayout.Padding = UDim.new(0, 12)
 ListLayout.SortOrder = Enum.SortOrder.LayoutOrder
 ListLayout.Parent = ScrollFrame
 
--- Function to create script card
+-- Function to create modern script card
 local function createScriptCard(scriptData, index)
     local Card = Instance.new("Frame")
     Card.Name = scriptData.Name
-    Card.Size = UDim2.new(1, 0, 0, 100)
-    Card.BackgroundColor3 = Color3.fromRGB(35, 35, 50)
+    Card.Size = UDim2.new(1, 0, 0, 90)
+    Card.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    Card.BackgroundTransparency = 0.96
     Card.BorderSizePixel = 0
     Card.Parent = ScrollFrame
     
     local CardCorner = Instance.new("UICorner")
-    CardCorner.CornerRadius = UDim.new(0, 12)
+    CardCorner.CornerRadius = UDim.new(0, 16)
     CardCorner.Parent = Card
     
-    -- Icon
+    -- Subtle card border
+    local CardStroke = Instance.new("UIStroke")
+    CardStroke.Color = Color3.fromRGB(255, 255, 255)
+    CardStroke.Transparency = 0.92
+    CardStroke.Thickness = 1
+    CardStroke.Parent = Card
+    
+    -- Modern minimalist icon
     local Icon = Instance.new("TextLabel")
-    Icon.Size = UDim2.new(0, 60, 0, 60)
-    Icon.Position = UDim2.new(0, 15, 0.5, -30)
+    Icon.Size = UDim2.new(0, 50, 0, 50)
+    Icon.Position = UDim2.new(0, 18, 0.5, -25)
     Icon.BackgroundColor3 = scriptData.Color
+    Icon.BackgroundTransparency = 0.85
     Icon.BorderSizePixel = 0
     Icon.Font = Enum.Font.GothamBold
     Icon.Text = scriptData.Icon
-    Icon.TextColor3 = Color3.fromRGB(255, 255, 255)
-    Icon.TextSize = 32
+    Icon.TextColor3 = scriptData.Color
+    Icon.TextSize = 26
     Icon.Parent = Card
     
     local IconCorner = Instance.new("UICorner")
-    IconCorner.CornerRadius = UDim.new(0, 10)
+    IconCorner.CornerRadius = UDim.new(0, 14)
     IconCorner.Parent = Icon
     
-    -- Script Name
+    -- Script Name with modern font
     local NameLabel = Instance.new("TextLabel")
-    NameLabel.Size = UDim2.new(1, -200, 0, 30)
-    NameLabel.Position = UDim2.new(0, 90, 0, 20)
+    NameLabel.Size = UDim2.new(1, -190, 0, 24)
+    NameLabel.Position = UDim2.new(0, 80, 0, 18)
     NameLabel.BackgroundTransparency = 1
     NameLabel.Font = Enum.Font.GothamBold
     NameLabel.Text = scriptData.Name
     NameLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-    NameLabel.TextSize = 20
+    NameLabel.TextSize = 16
     NameLabel.TextXAlignment = Enum.TextXAlignment.Left
     NameLabel.Parent = Card
     
-    -- Description
+    -- Minimal description
     local DescLabel = Instance.new("TextLabel")
-    DescLabel.Size = UDim2.new(1, -200, 0, 20)
-    DescLabel.Position = UDim2.new(0, 90, 0, 55)
+    DescLabel.Size = UDim2.new(1, -190, 0, 18)
+    DescLabel.Position = UDim2.new(0, 80, 0, 46)
     DescLabel.BackgroundTransparency = 1
     DescLabel.Font = Enum.Font.Gotham
     DescLabel.Text = scriptData.Description
-    DescLabel.TextColor3 = Color3.fromRGB(180, 180, 200)
-    DescLabel.TextSize = 14
+    DescLabel.TextColor3 = Color3.fromRGB(150, 150, 170)
+    DescLabel.TextSize = 12
     DescLabel.TextXAlignment = Enum.TextXAlignment.Left
     DescLabel.Parent = Card
     
-    -- Execute Button
+    -- Modern Execute Button
     local ExecuteBtn = Instance.new("TextButton")
-    ExecuteBtn.Size = UDim2.new(0, 100, 0, 35)
-    ExecuteBtn.Position = UDim2.new(1, -115, 0.5, -17.5)
+    ExecuteBtn.Size = UDim2.new(0, 85, 0, 32)
+    ExecuteBtn.Position = UDim2.new(1, -100, 0.5, -16)
     ExecuteBtn.BackgroundColor3 = scriptData.Color
+    ExecuteBtn.BackgroundTransparency = 0.15
     ExecuteBtn.BorderSizePixel = 0
     ExecuteBtn.Font = Enum.Font.GothamBold
-    ExecuteBtn.Text = "EXECUTE"
+    ExecuteBtn.Text = "Execute"
     ExecuteBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-    ExecuteBtn.TextSize = 14
+    ExecuteBtn.TextSize = 13
     ExecuteBtn.Parent = Card
     
     local ExecuteBtnCorner = Instance.new("UICorner")
-    ExecuteBtnCorner.CornerRadius = UDim.new(0, 8)
+    ExecuteBtnCorner.CornerRadius = UDim.new(0, 10)
     ExecuteBtnCorner.Parent = ExecuteBtn
     
-    -- Button hover effect
+    -- Smooth hover effect
     ExecuteBtn.MouseEnter:Connect(function()
-        TweenService:Create(ExecuteBtn, TweenInfo.new(0.2), {
-            BackgroundColor3 = Color3.fromRGB(
-                math.min(scriptData.Color.R * 255 + 30, 255),
-                math.min(scriptData.Color.G * 255 + 30, 255),
-                math.min(scriptData.Color.B * 255 + 30, 255)
-            )
+        TweenService:Create(ExecuteBtn, TweenInfo.new(0.25, Enum.EasingStyle.Quad), {
+            BackgroundTransparency = 0,
+            Size = UDim2.new(0, 88, 0, 32)
         }):Play()
     end)
     
     ExecuteBtn.MouseLeave:Connect(function()
-        TweenService:Create(ExecuteBtn, TweenInfo.new(0.2), {
-            BackgroundColor3 = scriptData.Color
+        TweenService:Create(ExecuteBtn, TweenInfo.new(0.25, Enum.EasingStyle.Quad), {
+            BackgroundTransparency = 0.15,
+            Size = UDim2.new(0, 85, 0, 32)
         }):Play()
     end)
     
@@ -470,16 +507,22 @@ local function createScriptCard(scriptData, index)
         end
     end)
     
-    -- Card hover effect
+    -- Subtle card hover effect
     Card.MouseEnter:Connect(function()
-        TweenService:Create(Card, TweenInfo.new(0.2), {
-            BackgroundColor3 = Color3.fromRGB(45, 45, 60)
+        TweenService:Create(Card, TweenInfo.new(0.3, Enum.EasingStyle.Quad), {
+            BackgroundTransparency = 0.93
+        }):Play()
+        TweenService:Create(CardStroke, TweenInfo.new(0.3), {
+            Transparency = 0.85
         }):Play()
     end)
     
     Card.MouseLeave:Connect(function()
-        TweenService:Create(Card, TweenInfo.new(0.2), {
-            BackgroundColor3 = Color3.fromRGB(35, 35, 50)
+        TweenService:Create(Card, TweenInfo.new(0.3, Enum.EasingStyle.Quad), {
+            BackgroundTransparency = 0.96
+        }):Play()
+        TweenService:Create(CardStroke, TweenInfo.new(0.3), {
+            Transparency = 0.92
         }):Play()
     end)
 end
@@ -532,15 +575,23 @@ UserInputService.InputChanged:Connect(function(input)
     end
 end)
 
--- Start animations
+-- Start animations with smooth entrance
 spawn(function()
     animateIn()
     MainFrame.Visible = true
     
-    -- Scale in animation
-    MainFrame.Size = UDim2.new(0, 0, 0, 0)
-    TweenService:Create(MainFrame, TweenInfo.new(0.5, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
-        Size = UDim2.new(0, 600, 0, 500)
+    -- Smooth scale and fade in
+    MainFrame.Size = UDim2.new(0, 470, 0, 530)
+    MainFrame.BackgroundTransparency = 1
+    MainStroke.Transparency = 1
+    
+    TweenService:Create(MainFrame, TweenInfo.new(0.6, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {
+        Size = UDim2.new(0, 520, 0, 580),
+        BackgroundTransparency = 0.05
+    }):Play()
+    
+    TweenService:Create(MainStroke, TweenInfo.new(0.6), {
+        Transparency = 0.9
     }):Play()
 end)
 
