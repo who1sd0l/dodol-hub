@@ -1,4 +1,4 @@
-﻿-- StarterPlayerScripts/MovementSuite.client.lua
+-- StarterPlayerScripts/MovementSuite.client.lua
 -- Fly + Run + Noclip + Teleport-To-Player (no server script required) + Professional UI
 
 local Players = game:GetService("Players")
@@ -264,25 +264,25 @@ local function makeGui()
 	screenGui.IgnoreGuiInset = true
 	screenGui.Parent = player:WaitForChild("PlayerGui")
 
-	-- Side panel (≈320×300)
+	-- Side panel (Cyberpunk Theme)
 	local main = Instance.new("Frame")
 	main.Name = "Main"
-	main.Size = UDim2.new(0, 320, 0, 300)
-	main.Position = UDim2.new(1, -340, 0, 28)
-	main.BackgroundColor3 = Color3.fromRGB(24,24,28)
+	main.Size = UDim2.new(0, 360, 0, 340)
+	main.Position = UDim2.new(1, -380, 0, 28)
+	main.BackgroundColor3 = Color3.fromRGB(8, 12, 16)
 	main.BorderSizePixel = 0
 	main.Active = true
 	main.Draggable = true
 	main.Parent = screenGui
 	do
 		local corner = Instance.new("UICorner")
-		corner.CornerRadius = UDim.new(0, 12)
+		corner.CornerRadius = UDim.new(0, 4)
 		corner.Parent = main
 
 		local stroke = Instance.new("UIStroke")
-		stroke.Thickness = 1
-		stroke.Transparency = 0.35
-		stroke.Color = Color3.fromRGB(255,255,255)
+		stroke.Thickness = 2
+		stroke.Transparency = 0.3
+		stroke.Color = Color3.fromRGB(0, 255, 150)
 		stroke.Parent = main
 	end
 
@@ -300,55 +300,62 @@ local function makeGui()
 
 	local title = Instance.new("TextLabel")
 	title.BackgroundTransparency = 1
-	title.Size = UDim2.new(1, -150, 1, 0)
-	title.Text = "Movement Suite"
-	title.TextColor3 = Color3.fromRGB(235,235,240)
-	title.Font = Enum.Font.GothamBold
-	title.TextSize = 18
+	title.Size = UDim2.new(1, -220, 1, 0)
+	title.Text = "root@MOVEMENT:~# 🚀"
+	title.TextColor3 = Color3.fromRGB(0, 255, 150)
+	title.Font = Enum.Font.Code
+	title.TextSize = 16
 	title.TextXAlignment = Enum.TextXAlignment.Left
 	title.Parent = header
 
 	local exitBtn = Instance.new("TextButton")
 	exitBtn.AnchorPoint = Vector2.new(1,0)
-	exitBtn.Position = UDim2.new(1, -85, 0, 0)
-	exitBtn.Size = UDim2.new(0, 60, 1, 0)
-	exitBtn.Text = "Exit"
-	exitBtn.BackgroundColor3 = Color3.fromRGB(180, 40, 40)
-	exitBtn.TextColor3 = Color3.fromRGB(255,255,255)
-	exitBtn.Font = Enum.Font.GothamBold
-	exitBtn.TextSize = 14
-	exitBtn.AutoButtonColor = true
+	exitBtn.Position = UDim2.new(1, 0, 0, 0)
+	exitBtn.Size = UDim2.new(0, 65, 1, 0)
+	exitBtn.Text = "[EXIT]"
+	exitBtn.BackgroundColor3 = Color3.fromRGB(80, 10, 20)
+	exitBtn.TextColor3 = Color3.fromRGB(255, 0, 80)
+	exitBtn.Font = Enum.Font.Code
+	exitBtn.TextSize = 13
+	exitBtn.AutoButtonColor = false
 	exitBtn.Parent = header
 	do
-		local c = Instance.new("UICorner") c.CornerRadius = UDim.new(0, 6) c.Parent = exitBtn
+		local c = Instance.new("UICorner") c.CornerRadius = UDim.new(0, 4) c.Parent = exitBtn
+		local s = Instance.new("UIStroke") s.Color = Color3.fromRGB(255, 0, 80) s.Transparency = 0.3 s.Thickness = 2 s.Parent = exitBtn
 	end
 
 	local hubBtn = Instance.new("TextButton")
 	hubBtn.AnchorPoint = Vector2.new(1,0)
-	hubBtn.Position = UDim2.new(1, -150, 0, 0)
-	hubBtn.Size = UDim2.new(0, 60, 1, 0)
-	hubBtn.Text = "Hub"
-	hubBtn.BackgroundColor3 = Color3.fromRGB(138, 43, 226)
-	hubBtn.TextColor3 = Color3.fromRGB(255,255,255)
-	hubBtn.Font = Enum.Font.GothamBold
-	hubBtn.TextSize = 14
-	hubBtn.AutoButtonColor = true
+	hubBtn.Position = UDim2.new(1, -75, 0, 0)
+	hubBtn.Size = UDim2.new(0, 65, 1, 0)
+	hubBtn.Text = "[HUB]"
+	hubBtn.BackgroundColor3 = Color3.fromRGB(60, 20, 90)
+	hubBtn.TextColor3 = Color3.fromRGB(180, 100, 255)
+	hubBtn.Font = Enum.Font.Code
+	hubBtn.TextSize = 13
+	hubBtn.AutoButtonColor = false
 	hubBtn.Parent = header
 	do
-		local c = Instance.new("UICorner") c.CornerRadius = UDim.new(0, 6) c.Parent = hubBtn
+		local c = Instance.new("UICorner") c.CornerRadius = UDim.new(0, 4) c.Parent = hubBtn
+		local s = Instance.new("UIStroke") s.Color = Color3.fromRGB(180, 100, 255) s.Transparency = 0.3 s.Thickness = 2 s.Parent = hubBtn
 	end
 
 	local hideBtn = Instance.new("TextButton")
 	hideBtn.AnchorPoint = Vector2.new(1,0)
 	hidden = false
-	hideBtn.Position = UDim2.new(1, 0, 0, 0)
-	hideBtn.Size = UDim2.new(0, 80, 1, 0)
-	hideBtn.Text = "Hide (;)"
-	hideBtn.BackgroundTransparency = 1
-	hideBtn.TextColor3 = Color3.fromRGB(180,180,190)
-	hideBtn.Font = Enum.Font.Gotham
-	hideBtn.TextSize = 14
+	hideBtn.Position = UDim2.new(1, -150, 0, 0)
+	hideBtn.Size = UDim2.new(0, 65, 1, 0)
+	hideBtn.Text = "[HIDE]"
+	hideBtn.BackgroundColor3 = Color3.fromRGB(0, 80, 100)
+	hideBtn.TextColor3 = Color3.fromRGB(0, 200, 255)
+	hideBtn.Font = Enum.Font.Code
+	hideBtn.TextSize = 13
+	hideBtn.AutoButtonColor = false
 	hideBtn.Parent = header
+	do
+		local c = Instance.new("UICorner") c.CornerRadius = UDim.new(0, 4) c.Parent = hideBtn
+		local s = Instance.new("UIStroke") s.Color = Color3.fromRGB(0, 200, 255) s.Transparency = 0.3 s.Thickness = 2 s.Parent = hideBtn
+	end
 
 	local layout = Instance.new("UIListLayout")
 	layout.Parent = main
@@ -358,11 +365,11 @@ local function makeGui()
 	local function section(name, height)
 		local frame = Instance.new("Frame")
 		frame.Size = UDim2.new(1, 0, 0, height or 110)
-		frame.BackgroundColor3 = Color3.fromRGB(30,30,36)
+		frame.BackgroundColor3 = Color3.fromRGB(5, 8, 10)
 		frame.Parent = main
 		do
-			local c = Instance.new("UICorner") c.CornerRadius = UDim.new(0, 10) c.Parent = frame
-			local s = Instance.new("UIStroke") s.Transparency = 0.65 s.Parent = frame
+			local c = Instance.new("UICorner") c.CornerRadius = UDim.new(0, 4) c.Parent = frame
+			local s = Instance.new("UIStroke") s.Color = Color3.fromRGB(0, 255, 150) s.Transparency = 0.6 s.Thickness = 1 s.Parent = frame
 		end
 
 		local p = Instance.new("UIPadding")
@@ -375,10 +382,10 @@ local function makeGui()
 		local label = Instance.new("TextLabel")
 		label.BackgroundTransparency = 1
 		label.Size = UDim2.new(1, 0, 0, 18)
-		label.Text = name
-		label.Font = Enum.Font.GothamMedium
-		label.TextSize = 14
-		label.TextColor3 = Color3.fromRGB(220,220,230)
+		label.Text = "┌─ " .. name .. " ───"
+		label.Font = Enum.Font.Code
+		label.TextSize = 13
+		label.TextColor3 = Color3.fromRGB(0, 200, 255)
 		label.TextXAlignment = Enum.TextXAlignment.Left
 		label.Parent = frame
 
@@ -394,14 +401,19 @@ local function makeGui()
 	local function pillButton(text)
 		local b = Instance.new("TextButton")
 		b.Text = text
-		b.Font = Enum.Font.Gotham
-		b.TextSize = 14
-		b.TextColor3 = Color3.fromRGB(235,235,240)
-		b.AutoButtonColor = true
-		b.BackgroundColor3 = Color3.fromRGB(52,52,60)
+		b.Font = Enum.Font.Code
+		b.TextSize = 13
+		b.TextColor3 = Color3.fromRGB(0, 255, 150)
+		b.AutoButtonColor = false
+		b.BackgroundColor3 = Color3.fromRGB(0, 40, 30)
 		local c = Instance.new("UICorner")
-		c.CornerRadius = UDim.new(0, 8)
+		c.CornerRadius = UDim.new(0, 4)
 		c.Parent = b
+		local s = Instance.new("UIStroke")
+		s.Color = Color3.fromRGB(0, 255, 150)
+		s.Transparency = 0.5
+		s.Thickness = 1
+		s.Parent = b
 		return b
 	end
 
@@ -414,9 +426,9 @@ local function makeGui()
 		l.BackgroundTransparency = 1
 		l.Size = UDim2.new(0.35, -6, 1, 0)
 		l.Text = labelText .. ": "
-		l.Font = Enum.Font.Gotham
-		l.TextSize = 14
-		l.TextColor3 = Color3.fromRGB(210,210,220)
+		l.Font = Enum.Font.Code
+		l.TextSize = 13
+		l.TextColor3 = Color3.fromRGB(0, 200, 255)
 		l.TextXAlignment = Enum.TextXAlignment.Left
 		l.Parent = row
 
@@ -424,17 +436,18 @@ local function makeGui()
 		local valueBox = Instance.new("TextBox")
 		valueBox.Size = UDim2.new(0.2, -6, 1, 0)
 		valueBox.Position = UDim2.new(0.35, 0, 0, 0)
-		valueBox.BackgroundColor3 = Color3.fromRGB(42, 42, 50)
+		valueBox.BackgroundColor3 = Color3.fromRGB(5, 8, 10)
 		valueBox.BorderSizePixel = 0
 		valueBox.Text = tostring(startValue)
-		valueBox.TextColor3 = Color3.fromRGB(235, 235, 240)
-		valueBox.Font = Enum.Font.GothamBold
+		valueBox.TextColor3 = Color3.fromRGB(0, 255, 150)
+		valueBox.Font = Enum.Font.Code
 		valueBox.TextSize = 14
 		valueBox.TextXAlignment = Enum.TextXAlignment.Center
 		valueBox.ClearTextOnFocus = true
 		valueBox.Parent = row
 		do
-			local c = Instance.new("UICorner") c.CornerRadius = UDim.new(0, 6) c.Parent = valueBox
+			local c = Instance.new("UICorner") c.CornerRadius = UDim.new(0, 4) c.Parent = valueBox
+			local s = Instance.new("UIStroke") s.Color = Color3.fromRGB(0, 255, 150) s.Transparency = 0.6 s.Thickness = 1 s.Parent = valueBox
 		end
 
 		local minus = pillButton("-"); minus.Size = UDim2.new(0.225, -3, 1, 0); minus.Position = UDim2.new(0.55, 6, 0, 0); minus.Parent = row
@@ -464,21 +477,26 @@ local function makeGui()
 	-- Search box
 	local searchBox = Instance.new("TextBox")
 	searchBox.Size = UDim2.new(1, 0, 0, 28)
-	searchBox.BackgroundColor3 = Color3.fromRGB(42, 42, 50)
+	searchBox.BackgroundColor3 = Color3.fromRGB(5, 8, 10)
 	searchBox.BorderSizePixel = 0
 	searchBox.Text = ""
-	searchBox.PlaceholderText = "Search player..."
-	searchBox.PlaceholderColor3 = Color3.fromRGB(140, 140, 150)
-	searchBox.TextColor3 = Color3.fromRGB(235, 235, 240)
-	searchBox.Font = Enum.Font.Gotham
-	searchBox.TextSize = 14
+	searchBox.PlaceholderText = "$ search player..."
+	searchBox.PlaceholderColor3 = Color3.fromRGB(0, 100, 80)
+	searchBox.TextColor3 = Color3.fromRGB(0, 255, 150)
+	searchBox.Font = Enum.Font.Code
+	searchBox.TextSize = 13
 	searchBox.TextXAlignment = Enum.TextXAlignment.Left
 	searchBox.ClearTextOnFocus = false
 	searchBox.Parent = tpContent
 	do
 		local corner = Instance.new("UICorner")
-		corner.CornerRadius = UDim.new(0, 8)
+		corner.CornerRadius = UDim.new(0, 4)
 		corner.Parent = searchBox
+		local stroke = Instance.new("UIStroke")
+		stroke.Color = Color3.fromRGB(0, 255, 150)
+		stroke.Transparency = 0.6
+		stroke.Thickness = 1
+		stroke.Parent = searchBox
 		local padding = Instance.new("UIPadding")
 		padding.PaddingLeft = UDim.new(0, 8)
 		padding.PaddingRight = UDim.new(0, 8)
@@ -492,9 +510,9 @@ local function makeGui()
 	status.BackgroundTransparency = 1
 	status.Size = UDim2.new(1, 0, 0, 20)
 	status.Position = UDim2.new(0, 0, 0, 102)
-	status.Font = Enum.Font.Gotham
-	status.TextSize = 13
-	status.TextColor3 = Color3.fromRGB(180,180,190)
+	status.Font = Enum.Font.Code
+	status.TextSize = 12
+	status.TextColor3 = Color3.fromRGB(0, 200, 255)
 	status.Text = ""
 	status.TextXAlignment = Enum.TextXAlignment.Left
 	status.Parent = tpContent
@@ -524,14 +542,14 @@ local function makeGui()
 	listHolder.CanvasSize = UDim2.new(0,0,0,0)
 	listHolder.ScrollBarThickness = 4
 	listHolder.ZIndex = 5
-	listHolder.BackgroundColor3 = Color3.fromRGB(34,34,40)
+	listHolder.BackgroundColor3 = Color3.fromRGB(5, 8, 10)
 	listHolder.BorderSizePixel = 0
 	listHolder.Size = UDim2.new(1, 0, 0, 140)
 	listHolder.Position = UDim2.new(0, 0, 0, 30)
 	listHolder.Parent = dropdown
 	do
-		local c = Instance.new("UICorner") c.CornerRadius = UDim.new(0, 8) c.Parent = listHolder
-		local s = Instance.new("UIStroke") s.Transparency = 0.7 s.Parent = listHolder
+		local c = Instance.new("UICorner") c.CornerRadius = UDim.new(0, 4) c.Parent = listHolder
+		local s = Instance.new("UIStroke") s.Color = Color3.fromRGB(0, 255, 150) s.Transparency = 0.6 s.Thickness = 1 s.Parent = listHolder
 		local padIn = Instance.new("UIPadding")
 		padIn.PaddingTop = UDim.new(0, 8)
 		padIn.PaddingBottom = UDim.new(0, 8)
