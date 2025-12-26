@@ -42,6 +42,13 @@ local Scripts = {
         Icon = "🛡️",
         ScriptUrl = "https://raw.githubusercontent.com/who1sd0l/dodol-hub/main/anti-afk.lua",
         Color = Color3.fromRGB(100, 200, 255)
+    },
+    {
+        Name = "Infinite Yield",
+        Description = "Advanced admin commands for all users",
+        Icon = "🛠️",
+        ScriptUrl = "https://raw.githubusercontent.com/who1sd0l/dodol-hub/main/infinite-yield.lua",
+        Color = Color3.fromRGB(100, 200, 255)
     }
 }
 
@@ -848,6 +855,5 @@ print("🎮 Dodol Hub Loaded Successfully!")
 print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
 print("💡 Minimized? Click floating button!")
 print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
-
 
 
