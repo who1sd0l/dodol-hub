@@ -52,6 +52,102 @@ ScreenGui.ResetOnSpawn = false
 ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 ScreenGui.Parent = PlayerGui
 
+-- Create Floating AssistiveTouch Button
+local FloatingButton = Instance.new("TextButton")
+FloatingButton.Name = "FloatingButton"
+FloatingButton.Size = UDim2.new(0, 60, 0, 60)
+FloatingButton.Position = UDim2.new(1, -80, 0.5, -30)
+FloatingButton.BackgroundColor3 = Color3.fromRGB(8, 12, 16)
+FloatingButton.BorderSizePixel = 0
+FloatingButton.Font = Enum.Font.Code
+FloatingButton.Text = "🎮"
+FloatingButton.TextColor3 = Color3.fromRGB(0, 255, 150)
+FloatingButton.TextSize = 28
+FloatingButton.Visible = false
+FloatingButton.Active = true
+FloatingButton.Draggable = true
+FloatingButton.ZIndex = 100
+FloatingButton.Parent = ScreenGui
+
+local FloatingCorner = Instance.new("UICorner")
+FloatingCorner.CornerRadius = UDim.new(1, 0)
+FloatingCorner.Parent = FloatingButton
+
+local FloatingStroke = Instance.new("UIStroke")
+FloatingStroke.Color = Color3.fromRGB(0, 255, 150)
+FloatingStroke.Transparency = 0.3
+FloatingStroke.Thickness = 3
+FloatingStroke.Parent = FloatingButton
+
+-- Floating button hover effect
+FloatingButton.MouseEnter:Connect(function()
+    TweenService:Create(FloatingButton, TweenInfo.new(0.2, Enum.EasingStyle.Quad), {
+        Size = UDim2.new(0, 70, 0, 70)
+    }):Play()
+    TweenService:Create(FloatingStroke, TweenInfo.new(0.2), {
+        Transparency = 0.1
+    }):Play()
+end)
+
+FloatingButton.MouseLeave:Connect(function()
+    TweenService:Create(FloatingButton, TweenInfo.new(0.2, Enum.EasingStyle.Quad), {
+        Size = UDim2.new(0, 60, 0, 60)
+    }):Play()
+    TweenService:Create(FloatingStroke, TweenInfo.new(0.2), {
+        Transparency = 0.3
+    }):Play()
+end)
+
+-- Pulse animation for floating button
+spawn(function()
+    while FloatingButton.Parent do
+        if FloatingButton.Visible then
+            TweenService:Create(FloatingStroke, TweenInfo.new(1, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), {
+                Transparency = 0.6
+            }):Play()
+        end
+        wait(1)
+    end
+end)
+
+-- Floating button click to show hub
+FloatingButton.MouseButton1Click:Connect(function()
+    -- Hide floating button
+    TweenService:Create(FloatingButton, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
+        Size = UDim2.new(0, 20, 0, 20),
+        BackgroundTransparency = 1
+    }):Play()
+    
+    task.wait(0.2)
+    FloatingButton.Visible = false
+    
+    -- Show main frame (will be defined later)
+    task.defer(function()
+        if MainFrame then
+            MainFrame.Visible = true
+            MainFrame.Position = UDim2.new(0.5, -275, -1, 0)
+            MainFrame.BackgroundTransparency = 1
+            MainStroke.Transparency = 1
+            
+            -- Glitch-in effect
+            for i = 1, 2 do
+                MainFrame.Position = UDim2.new(0.5, -275 + math.random(-3, 3), -1, 0)
+                wait(0.03)
+            end
+            
+            -- Smooth materialize from top
+            TweenService:Create(MainFrame, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+                Position = UDim2.new(0.5, -275, 0.5, -300),
+                BackgroundTransparency = 0.1
+            }):Play()
+            
+            TweenService:Create(MainStroke, TweenInfo.new(0.5), {
+                Transparency = 0.4
+            }):Play()
+        end
+    end)
+end)
+
 -- Create Terminal-Style Loading Screen (Hacker Theme)
 local LoadingFrame = Instance.new("Frame")
 LoadingFrame.Name = "LoadingFrame"
@@ -396,7 +492,26 @@ CloseButton.MouseLeave:Connect(function()
 end)
 
 CloseButton.MouseButton1Click:Connect(function()
-    ScreenGui:Destroy()
+    -- Minimize hub and show floating button
+    TweenService:Create(MainFrame, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
+        Position = UDim2.new(0.5, -275, -1, 0),
+        BackgroundTransparency = 1
+    }):Play()
+    TweenService:Create(MainStroke, TweenInfo.new(0.3), {
+        Transparency = 1
+    }):Play()
+    
+    task.wait(0.3)
+    MainFrame.Visible = false
+    
+    -- Show floating button with animation
+    FloatingButton.Visible = true
+    FloatingButton.Size = UDim2.new(0, 20, 0, 20)
+    FloatingButton.BackgroundTransparency = 1
+    TweenService:Create(FloatingButton, TweenInfo.new(0.4, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+        Size = UDim2.new(0, 60, 0, 60),
+        BackgroundTransparency = 0
+    }):Play()
 end)
 
 -- Scripts Container
@@ -703,8 +818,45 @@ spawn(function()
     }):Play()
 end)
 
+-- Global functions for external scripts
+_G.DodolHub = {
+    Show = function()
+        if FloatingButton.Visible then
+            FloatingButton.MouseButton1Click:Fire()
+        elseif not MainFrame.Visible then
+            MainFrame.Visible = true
+            MainFrame.Position = UDim2.new(0.5, -275, -1, 0)
+            MainFrame.BackgroundTransparency = 1
+            MainStroke.Transparency = 1
+            
+            TweenService:Create(MainFrame, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+                Position = UDim2.new(0.5, -275, 0.5, -300),
+                BackgroundTransparency = 0.1
+            }):Play()
+            
+            TweenService:Create(MainStroke, TweenInfo.new(0.5), {
+                Transparency = 0.4
+            }):Play()
+        end
+    end,
+    
+    Hide = function()
+        CloseButton.MouseButton1Click:Fire()
+    end,
+    
+    Toggle = function()
+        if MainFrame.Visible then
+            _G.DodolHub.Hide()
+        else
+            _G.DodolHub.Show()
+        end
+    end
+}
+
 print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
 print("🎮 Dodol Hub Loaded Successfully!")
+print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+print("💡 Minimized? Click floating button!")
 print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
 
 
