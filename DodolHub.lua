@@ -110,44 +110,6 @@ spawn(function()
     end
 end)
 
--- Floating button click to show hub
-FloatingButton.MouseButton1Click:Connect(function()
-    -- Hide floating button
-    TweenService:Create(FloatingButton, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
-        Size = UDim2.new(0, 20, 0, 20),
-        BackgroundTransparency = 1
-    }):Play()
-    
-    task.wait(0.2)
-    FloatingButton.Visible = false
-    
-    -- Show main frame (will be defined later)
-    task.defer(function()
-        if MainFrame then
-            MainFrame.Visible = true
-            MainFrame.Position = UDim2.new(0.5, -275, -1, 0)
-            MainFrame.BackgroundTransparency = 1
-            MainStroke.Transparency = 1
-            
-            -- Glitch-in effect
-            for i = 1, 2 do
-                MainFrame.Position = UDim2.new(0.5, -275 + math.random(-3, 3), -1, 0)
-                wait(0.03)
-            end
-            
-            -- Smooth materialize from top
-            TweenService:Create(MainFrame, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-                Position = UDim2.new(0.5, -275, 0.5, -300),
-                BackgroundTransparency = 0.1
-            }):Play()
-            
-            TweenService:Create(MainStroke, TweenInfo.new(0.5), {
-                Transparency = 0.4
-            }):Play()
-        end
-    end)
-end)
-
 -- Create Terminal-Style Loading Screen (Hacker Theme)
 local LoadingFrame = Instance.new("Frame")
 LoadingFrame.Name = "LoadingFrame"
@@ -663,18 +625,8 @@ local function createScriptCard(scriptData, index)
         end
         
         local success, err = pcall(function()
-            -- Hide hub
-            MainFrame.Visible = false
-            
-            -- Store hub reference for scripts
-            _G.DodolHub = {
-                Show = function()
-                    MainFrame.Visible = true
-                end,
-                Hide = function()
-                    MainFrame.Visible = false
-                end
-            }
+            -- Hide hub (minimize to floating button)
+            CloseButton.MouseButton1Click:Fire()
             
             -- Load and execute script from URL
             local scriptUrl = scriptData.ScriptUrl
@@ -818,12 +770,48 @@ spawn(function()
     }):Play()
 end)
 
+-- Floating button click handler (defined after MainFrame exists)
+FloatingButton.MouseButton1Click:Connect(function()
+    -- Hide floating button
+    TweenService:Create(FloatingButton, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
+        Size = UDim2.new(0, 20, 0, 20),
+        BackgroundTransparency = 1
+    }):Play()
+    
+    task.wait(0.2)
+    FloatingButton.Visible = false
+    
+    -- Show main frame
+    MainFrame.Visible = true
+    MainFrame.Position = UDim2.new(0.5, -275, -1, 0)
+    MainFrame.BackgroundTransparency = 1
+    MainStroke.Transparency = 1
+    
+    -- Glitch-in effect
+    for i = 1, 2 do
+        MainFrame.Position = UDim2.new(0.5, -275 + math.random(-3, 3), -1, 0)
+        wait(0.03)
+    end
+    
+    -- Smooth materialize from top
+    TweenService:Create(MainFrame, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+        Position = UDim2.new(0.5, -275, 0.5, -300),
+        BackgroundTransparency = 0.1
+    }):Play()
+    
+    TweenService:Create(MainStroke, TweenInfo.new(0.5), {
+        Transparency = 0.4
+    }):Play()
+end)
+
 -- Global functions for external scripts
 _G.DodolHub = {
     Show = function()
         if FloatingButton.Visible then
+            -- Trigger floating button click to show hub
             FloatingButton.MouseButton1Click:Fire()
         elseif not MainFrame.Visible then
+            -- Show hub directly
             MainFrame.Visible = true
             MainFrame.Position = UDim2.new(0.5, -275, -1, 0)
             MainFrame.BackgroundTransparency = 1
@@ -841,7 +829,9 @@ _G.DodolHub = {
     end,
     
     Hide = function()
-        CloseButton.MouseButton1Click:Fire()
+        if MainFrame.Visible then
+            CloseButton.MouseButton1Click:Fire()
+        end
     end,
     
     Toggle = function()
