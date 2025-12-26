@@ -37,10 +37,10 @@ local Scripts = {
         Color = Color3.fromRGB(150, 255, 100)
     },
     {
-        Name = "Free Camera v2",
-        Description = "Fly around with smooth camera controls",
-        Icon = "📷",
-        ScriptUrl = "https://raw.githubusercontent.com/who1sd0l/dodol-hub/main/Cam-2.lua",
+        Name = "Anti-afk",
+        Description = "Prevents you from being kicked for inactivity",
+        Icon = "🛡️",
+        ScriptUrl = "https://raw.githubusercontent.com/who1sd0l/dodol-hub/main/anti-afk.lua",
         Color = Color3.fromRGB(100, 200, 255)
     }
 }
@@ -706,6 +706,5 @@ end)
 print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
 print("🎮 Dodol Hub Loaded Successfully!")
 print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
-
 
 
