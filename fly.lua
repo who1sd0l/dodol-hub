@@ -1,11 +1,100 @@
 -- StarterPlayerScripts/MovementSuite.client.lua
 -- Fly + Run + Noclip + Teleport-To-Player (no server script required) + Professional UI
+-- Enhanced with Anti-Cheat & Anti-Kick Protection
 
 local Players = game:GetService("Players")
 local UserInputService = game:GetService("UserInputService")
 local RunService = game:GetService("RunService")
+local VirtualUser = game:GetService("VirtualUser")
 
 local player = Players.LocalPlayer
+
+-- =================== Anti-Cheat & Anti-Kick Protection ===================
+-- Anti-Kick (prevents idle kicks)
+local antiKickEnabled = true
+local antiKickSuccess = pcall(function()
+    player.Idled:Connect(function()
+        if antiKickEnabled and VirtualUser then
+            pcall(function()
+                VirtualUser:CaptureController()
+                VirtualUser:ClickButton2(Vector2.new())
+            end)
+        end
+    end)
+end)
+
+if not antiKickSuccess then
+    warn("[Fly Script] Anti-kick protection unavailable")
+end
+
+-- Hook protection: Store original metamethods to prevent detection
+-- Wrapped in pcall for compatibility with different executors
+local hookSuccess = pcall(function()
+    if not getrawmetatable or not setreadonly or not newcclosure or not getnamecallmethod then
+        return
+    end
+    
+    local gameMetatable = getrawmetatable(game)
+    local oldNamecall = gameMetatable.__namecall
+    local oldIndex = gameMetatable.__index
+
+    setreadonly(gameMetatable, false)
+
+    -- Protect against anti-cheat detection via namecall hooks
+    gameMetatable.__namecall = newcclosure(function(self, ...)
+        local method = getnamecallmethod()
+        local args = {...}
+        
+        -- Block kick attempts
+        if method == "Kick" or method == "kick" then
+            return
+        end
+        
+        -- Spoof GetFocusedTextBox to appear inactive
+        if method == "GetFocusedTextBox" then
+            return nil
+        end
+        
+        return oldNamecall(self, ...)
+    end)
+
+    -- Protect against index-based detection
+    gameMetatable.__index = newcclosure(function(self, key)
+        -- Prevent detection of suspicious objects
+        if key == "FlyVelocity" or key == "FlyGyro" then
+            return nil
+        end
+        
+        return oldIndex(self, key)
+    end)
+
+    setreadonly(gameMetatable, true)
+end)
+
+if not hookSuccess then
+    warn("[Fly Script] Metamethod hooks unavailable in this executor - anti-detection features disabled")
+end
+
+-- =================== Anti-Detection Utilities ===================
+local antiDetection = {
+    -- Randomize timing to avoid pattern detection
+    getRandomWait = function(min, max)
+        return min + (math.random() * (max - min))
+    end,
+    
+    -- Smooth velocity changes to avoid instant speed spikes
+    smoothVelocity = function(current, target, smoothing)
+        return current:Lerp(target, smoothing)
+    end,
+    
+    -- Limit velocity to avoid extreme values
+    capVelocity = function(velocity, maxMagnitude)
+        if velocity.Magnitude > maxMagnitude then
+            return velocity.Unit * maxMagnitude
+        end
+        return velocity
+    end
+}
 
 -- =================== Settings (do not change names) ===================
 local settings = {
@@ -108,10 +197,29 @@ local function onCharacterAdded(character)
 		bodyGyro.Name = "FlyGyro"
 		bodyGyro.Parent = root
 		
-		-- Set character state to flying
-		humanoid.PlatformStand = true
+		-- Set character state to flying (use Physics instead of PlatformStand for less detection)
+		humanoid:ChangeState(Enum.HumanoidStateType.Physics)
+		
+		-- Protect humanoid state from being changed by anti-cheat
+		local stateProtection = humanoid.StateChanged:Connect(function(_, newState)
+			if flying and newState ~= Enum.HumanoidStateType.Physics and newState ~= Enum.HumanoidStateType.Freefall then
+				task.wait()
+				humanoid:ChangeState(Enum.HumanoidStateType.Physics)
+			end
+		end)
 
-		flyConnStepped = RunService.Heartbeat:Connect(updateMoveVector)
+		flyConnStepped = RunService.Heartbeat:Connect(function()
+			updateMoveVector()
+			-- Additional state protection
+			if not stateProtection.Connected then
+				stateProtection = humanoid.StateChanged:Connect(function(_, newState)
+					if flying and newState ~= Enum.HumanoidStateType.Physics and newState ~= Enum.HumanoidStateType.Freefall then
+						task.wait()
+						humanoid:ChangeState(Enum.HumanoidStateType.Physics)
+					end
+				end)
+			end
+		end)
 	end
 
 	local function stopFlying()
@@ -120,7 +228,7 @@ local function onCharacterAdded(character)
 		if flyConnStepped then flyConnStepped:Disconnect() flyConnStepped = nil end
 		
 		-- Restore character state
-		humanoid.PlatformStand = false
+		humanoid:ChangeState(Enum.HumanoidStateType.GettingUp)
 		
 		-- Remove fly objects
 		local flyVel = root:FindFirstChild("FlyVelocity")
@@ -144,6 +252,16 @@ local function onCharacterAdded(character)
 	local function startNoclip()
 		if noclipOn then return end
 		noclipOn = true
+		
+		-- Store original CanCollide states for restoration
+		local originalCollisionStates = {}
+		for _, part in ipairs(character:GetDescendants()) do
+			if part:IsA("BasePart") then
+				originalCollisionStates[part] = part.CanCollide
+			end
+		end
+		
+		-- Use Stepped for more reliable noclip
 		noclipConn = RunService.Stepped:Connect(function()
 			for _, part in ipairs(character:GetDescendants()) do
 				if part:IsA("BasePart") and part.CanCollide then
@@ -151,16 +269,28 @@ local function onCharacterAdded(character)
 				end
 			end
 		end)
+		
+		-- Store states for restoration
+		character:SetAttribute("NoclipOriginalStates", originalCollisionStates)
 	end
 
 	local function stopNoclip()
 		if not noclipOn then return end
 		noclipOn = false
 		if noclipConn then noclipConn:Disconnect() noclipConn = nil end
-		-- restore collisions
+		
+		-- Restore original collision states
+		local originalStates = character:GetAttribute("NoclipOriginalStates") or {}
 		for _, part in ipairs(character:GetDescendants()) do
 			if part:IsA("BasePart") then
-				part.CanCollide = true
+				if originalStates[part] ~= nil then
+					part.CanCollide = originalStates[part]
+				else
+					-- Default restoration for safety
+					if part.Name ~= "HumanoidRootPart" and part.Name ~= "Head" then
+						part.CanCollide = true
+					end
+				end
 			end
 		end
 	end
@@ -242,7 +372,7 @@ local function onCharacterAdded(character)
 	}
 end
 
--- Teleport glue (unchanged)
+-- Teleport glue (enhanced with anti-detection)
 local function teleportToUserId(targetUserId)
 	local target = Players:GetPlayerByUserId(targetUserId)
 	if not target or not target.Character or not target.Character:FindFirstChild("HumanoidRootPart") then
@@ -250,7 +380,25 @@ local function teleportToUserId(targetUserId)
 	end
 	local me = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
 	if not me then return false, "No character" end
-	me.CFrame = target.Character.HumanoidRootPart.CFrame + Vector3.new(0, 3, 0)
+	
+	-- Smooth teleport to avoid instant position jumps that trigger anti-cheat
+	local startPos = me.CFrame
+	local endPos = target.Character.HumanoidRootPart.CFrame + Vector3.new(0, 3, 0)
+	local distance = (endPos.Position - startPos.Position).Magnitude
+	
+	-- For short distances, teleport directly; for long distances, use multiple steps
+	if distance < 100 then
+		me.CFrame = endPos
+	else
+		-- Multi-step teleport to avoid detection
+		local steps = math.min(math.ceil(distance / 50), 10)
+		for i = 1, steps do
+			local alpha = i / steps
+			me.CFrame = startPos:Lerp(endPos, alpha)
+			task.wait(0.03) -- Small delay between steps
+		end
+	end
+	
 	return true
 end
 
@@ -342,7 +490,7 @@ local function makeGui()
 
 	local hideBtn = Instance.new("TextButton")
 	hideBtn.AnchorPoint = Vector2.new(1,0)
-	hidden = false
+	local hidden = false
 	hideBtn.Position = UDim2.new(1, -150, 0, 0)
 	hideBtn.Size = UDim2.new(0, 65, 1, 0)
 	hideBtn.Text = "[HIDE]"
