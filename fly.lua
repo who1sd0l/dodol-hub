@@ -1,4 +1,4 @@
-﻿-- StarterPlayerScripts/MovementSuite.client.lua
+-- StarterPlayerScripts/MovementSuite.client.lua
 -- Fly + Run + Noclip + Teleport-To-Player (no server script required) + Professional UI
 
 local Players = game:GetService("Players")
